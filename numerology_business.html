@@ -1,0 +1,1677 @@
+<!doctype html>
+<html lang="et">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Äri Numeroloogiline Sobivus | Demo + Täisraport</title>
+  <style>
+    :root{
+      --bg:#0b0f19;
+      --panel:#111a2e;
+      --panel2:#0f1628;
+      --text:#e8eefc;
+      --muted:#a9b7db;
+      --line:#23314f;
+      --accent:#7aa7ff;
+      --accent2:#b9ffcc;
+      --warn:#ffd37a;
+      --danger:#ff7aa2;
+      --good:#7affbf;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      background: radial-gradient(1100px 700px at 15% 10%, rgba(122,167,255,.28), transparent 55%),
+                  radial-gradient(900px 600px at 85% 35%, rgba(185,255,204,.18), transparent 55%),
+                  linear-gradient(180deg, #070a12, var(--bg));
+      color:var(--text);
+    }
+
+    a{ color: var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .wrap{ max-width: 1180px; margin: 0 auto; padding: 26px 18px 60px; }
+
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+      padding: 10px 6px 18px;
+      position: sticky; top:0; z-index:10;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(7,10,18,.92), rgba(7,10,18,.68));
+      border-bottom: 1px solid rgba(35,49,79,.55);
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      user-select:none;
+    }
+    .logo{
+      width:38px; height:38px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(122,167,255,1), rgba(185,255,204,1));
+      box-shadow: 0 12px 26px rgba(122,167,255,.25);
+      display:grid; place-items:center;
+      color:#061022;
+      font-weight: 900;
+    }
+    .brand h1{ margin:0; font-size: 15px; letter-spacing:.2px; }
+    .brand p{ margin:0; font-size: 12px; color: var(--muted); }
+
+    nav{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+    }
+
+    .pill{
+      padding: 9px 12px;
+      border: 1px solid rgba(35,49,79,.9);
+      background: rgba(17,26,46,.45);
+      border-radius: 999px;
+      color: var(--text);
+      font-size: 13px;
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .pill:hover{ transform: translateY(-1px); border-color: rgba(122,167,255,.65); }
+    .pill.active{ background: rgba(122,167,255,.18); border-color: rgba(122,167,255,.85); }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+      header{ position:static; }
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(17,26,46,.85), rgba(15,22,40,.88));
+      border: 1px solid rgba(35,49,79,.85);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .hero{
+      padding: 18px;
+      border-radius: calc(var(--radius) + 6px);
+      background: radial-gradient(900px 380px at 12% 10%, rgba(122,167,255,.18), transparent 60%),
+                  radial-gradient(800px 420px at 88% 20%, rgba(185,255,204,.12), transparent 55%),
+                  linear-gradient(180deg, rgba(17,26,46,.9), rgba(15,22,40,.92));
+      border: 1px solid rgba(35,49,79,.9);
+      box-shadow: var(--shadow);
+    }
+    .hero h2{ margin:0 0 10px; font-size: 28px; line-height:1.1; }
+    .hero p{ margin:0 0 14px; color: var(--muted); font-size: 14px; max-width: 75ch; }
+
+    .ctaRow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+    .btn{
+      border: 1px solid rgba(35,49,79,.9);
+      background: rgba(17,26,46,.7);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor:pointer;
+      font-weight: 650;
+      font-size: 13px;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); border-color: rgba(122,167,255,.7); }
+    .btn.primary{ background: rgba(122,167,255,.22); border-color: rgba(122,167,255,.85); }
+    .btn.good{ background: rgba(122,255,191,.15); border-color: rgba(122,255,191,.75); }
+    .btn.warn{ background: rgba(255,211,122,.12); border-color: rgba(255,211,122,.75); }
+    .btn.danger{ background: rgba(255,122,162,.12); border-color: rgba(255,122,162,.75); }
+    .btn.ghost{ background: transparent; }
+
+    .small{ font-size: 12px; color: var(--muted); }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .row > *{ flex: 1 1 160px; }
+
+    label{ display:block; font-size: 12px; color: var(--muted); margin: 10px 0 6px; }
+    input, select, textarea{
+      width:100%;
+      padding: 10px 11px;
+      border-radius: 12px;
+      border: 1px solid rgba(35,49,79,.9);
+      background: rgba(7,10,18,.45);
+      color: var(--text);
+      outline:none;
+    }
+    textarea{ min-height: 120px; resize: vertical; font-family: var(--mono); font-size: 12px; }
+    input:focus, select:focus, textarea:focus{ border-color: rgba(122,167,255,.85); }
+
+    .sectionTitle{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom: 8px; }
+    .sectionTitle h3{ margin:0; font-size: 14px; letter-spacing:.2px; }
+
+    .tag{
+      display:inline-flex; align-items:center; gap:6px;
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px solid rgba(35,49,79,.85);
+      background: rgba(7,10,18,.35);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .score{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(35,49,79,.95);
+      background: rgba(7,10,18,.35);
+      margin-top: 10px;
+    }
+
+    .scoreBig{
+      display:flex; align-items:baseline; gap:10px;
+    }
+    .scoreBig .n{ font-size: 40px; font-weight: 900; letter-spacing:.2px; }
+    .scoreBig .pct{ color: var(--muted); font-weight: 700; }
+
+    .bar{
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(35,49,79,.65);
+      overflow:hidden;
+      border: 1px solid rgba(35,49,79,.9);
+      margin-top: 10px;
+    }
+    .bar > div{ height:100%; width:0%; background: rgba(122,167,255,.95); }
+
+    .bullets{ margin: 10px 0 0; padding-left: 18px; color: var(--text); }
+    .bullets li{ margin: 6px 0; color: var(--muted); }
+
+    .hr{ height:1px; background: rgba(35,49,79,.75); margin: 14px 0; }
+
+    .kbd{ font-family: var(--mono); font-size: 12px; padding: 2px 6px; border-radius: 8px; border: 1px solid rgba(35,49,79,.85); background: rgba(7,10,18,.35); }
+
+    .twoCol{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 740px){ .twoCol{ grid-template-columns:1fr; } }
+
+    .ownerRow{
+      border: 1px solid rgba(35,49,79,.85);
+      background: rgba(7,10,18,.25);
+      border-radius: 16px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .toast{
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      max-width: 420px;
+      background: rgba(17,26,46,.92);
+      border: 1px solid rgba(35,49,79,.9);
+      border-radius: 16px;
+      padding: 12px 12px;
+      box-shadow: var(--shadow);
+      display:none;
+      z-index: 40;
+    }
+    .toast strong{ display:block; margin-bottom: 4px; }
+
+    .mutedBox{
+      border: 1px dashed rgba(35,49,79,.9);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(7,10,18,.25);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border-radius: 14px;
+      border: 1px solid rgba(35,49,79,.85);
+      background: rgba(7,10,18,.25);
+    }
+    .table th, .table td{ padding: 10px; border-bottom: 1px solid rgba(35,49,79,.6); font-size: 13px; }
+    .table th{ color: var(--muted); text-align:left; font-weight: 700; }
+    .table tr:last-child td{ border-bottom:none; }
+
+    .rightTools{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(35,49,79,.85);
+      background: rgba(7,10,18,.35);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .badge.good{ border-color: rgba(122,255,191,.75); color: rgba(185,255,204,1); }
+    .badge.warn{ border-color: rgba(255,211,122,.75); color: rgba(255,211,122,1); }
+    .badge.danger{ border-color: rgba(255,122,162,.75); color: rgba(255,122,162,1); }
+
+    .mono{ font-family: var(--mono); }
+
+    details{ border: 1px solid rgba(35,49,79,.85); border-radius: 16px; background: rgba(7,10,18,.25); padding: 10px 12px; }
+    summary{ cursor:pointer; color: var(--text); font-weight: 700; }
+
+    .footer{ margin-top: 18px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <header class="wrap" style="padding-bottom:12px;">
+    <div class="brand">
+      <div class="logo">#</div>
+      <div>
+        <h1>Äri Numeroloogiline Sobivus</h1>
+        <p>Demo, täisraport, nime-labor, ajalugu (salvestus localStorage)</p>
+      </div>
+    </div>
+
+    <nav>
+      <button class="pill active" data-view="home">Avaleht</button>
+      <button class="pill" data-view="demo">Tasuta demo</button>
+      <button class="pill" data-view="full">Täisraport</button>
+      <button class="pill" data-view="history">Ajalugu</button>
+      <button class="pill" data-view="admin">Admin-config</button>
+    </nav>
+  </header>
+
+  <div class="wrap">
+    <section id="view-home" class="view">
+      <div class="hero">
+        <h2>Kas sinu äri nimi on samas rütmis omanike energiaga?</h2>
+        <p>
+          See ühe-lehe prototüüp arvutab Pythagorase (1–9) nimenumbrid, sünnikuupäeva numbrid (sh meistrinumbrid 11/22),
+          võrdleb omanike ja ettevõtte energiat, annab sobivusskoori (0–100), näitab punalipu, ning pakub nimevariante.
+          Kõik toimub brauseris. Ajalugu salvestub sinu seadmesse (localStorage).
+        </p>
+        <div class="ctaRow">
+          <button class="btn primary" id="goDemo">Proovi tasuta demo</button>
+          <button class="btn good" id="goFull">Tee täisraport</button>
+          <span class="tag">⚙️ Konfiguratsioon on muudetav Admin-config vaates</span>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Mida see teeb (MVP)</h3>
+            <span class="badge">Praktiline, neutraalne</span>
+          </div>
+          <div class="twoCol">
+            <div class="mutedBox">
+              <strong>Arvutab</strong>
+              <ul class="bullets" style="margin-top:8px;">
+                <li>Inimene: Väljendus, Hinge, Isiksuse number</li>
+                <li>Kuupäev: elutee + sünnipäeva number</li>
+                <li>Ettevõte: brändinimi + juriidiline nimi (sh OÜ)</li>
+                <li>Reg kuupäev: ettevõtte elutee</li>
+              </ul>
+            </div>
+            <div class="mutedBox">
+              <strong>Tõlgendab</strong>
+              <ul class="bullets" style="margin-top:8px;">
+                <li>Kooskõla: nimed vs omanikud, reg kuupäev vs omanikud</li>
+                <li>Skoor 0–100 + katvus (%) kui andmeid puudu</li>
+                <li>Punalipp: ainult kui skoor &lt; 20 ja katvus piisav</li>
+                <li>Nime-labor: kiirtest + automaatvariandid (OÜ ei muutu)</li>
+              </ul>
+            </div>
+          </div>
+          <div class="hr"></div>
+          <p class="small">
+            Märkus: e-maili saatmine vajab päris rakenduses backend-i. Selles protos pakub "Saada e-mailile" nupp
+            valmis <span class="kbd">mailto:</span> kirja sinu e-posti rakendusse.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Kiirjuhtnöör</h3>
+            <span class="badge">🧪 Prototüüp</span>
+          </div>
+          <ol class="bullets" style="color:var(--muted)">
+            <li>Alusta <span class="kbd">Tasuta demo</span> vaates.</li>
+            <li>Kui tahad mitut osanikku ja nimevariatsioone, ava <span class="kbd">Täisraport</span>.</li>
+            <li>Kui tulemused tunduvad valed, kontrolli <span class="kbd">Admin-config</span> (tähetabel, maatriks, kaalud).</li>
+          </ol>
+          <div class="hr"></div>
+          <div class="mutedBox">
+            <strong>Valemite läbipaistvus</strong>
+            <div style="margin-top:8px;">
+              Kõik arvutused on lehe sees. Ava devtools ja otsi <span class="kbd">CONFIG</span> ning <span class="kbd">compute</span>.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <strong>Hoiatus:</strong> see on demo/prototüüp. Päris toode vajab autentimist, makseid, serveripoolset raporti genereerimist (PDF),
+        ja e-maili saatmist. Siin on fookus arvutusloogika, UX-voo ja konfiguratsiooni selgusel.
+      </div>
+    </section>
+
+    <section id="view-demo" class="view" style="display:none;">
+      <div class="grid">
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Tasuta demo</h3>
+            <span class="badge">Skoor + 3 punkti</span>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Ettevõtte brändinimi</label>
+              <input id="demoBrand" placeholder="nt Pirja Teraapiad" />
+            </div>
+            <div>
+              <label>Omaniku nimi</label>
+              <input id="demoOwnerName" placeholder="nt Pirja" />
+            </div>
+            <div>
+              <label>Omaniku sünnikuupäev</label>
+              <input id="demoOwnerDob" type="date" />
+            </div>
+          </div>
+
+          <div class="ctaRow" style="margin-top:12px;">
+            <button class="btn primary" id="runDemo">Arvuta demo</button>
+            <button class="btn ghost" id="fillDemo">Täida näidisega</button>
+            <span class="tag">Meistrinumbrid: 11/22</span>
+          </div>
+
+          <div id="demoOut" style="margin-top:12px; display:none;">
+            <div class="score">
+              <div class="scoreBig">
+                <div class="n" id="demoScore">—</div>
+                <div class="pct">/ 100</div>
+              </div>
+              <div class="rightTools">
+                <span class="badge" id="demoCoverage">Katvus: —</span>
+                <span class="badge" id="demoFlag" style="display:none;">PUNALIPP</span>
+              </div>
+            </div>
+            <div class="bar"><div id="demoBar"></div></div>
+            <ul class="bullets" id="demoBullets"></ul>
+            <div class="hr"></div>
+            <div class="mutedBox" id="demoExplain"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Kuidas demo skoor sünnib</h3>
+            <span class="badge">Läbipaistev</span>
+          </div>
+          <div class="mutedBox">
+            <p style="margin:0 0 8px;">
+              Demo kasutab lihtsustatud skoori: <strong>Brändinime Expression</strong> vs <strong>omaniku Elutee</strong> +
+              <strong>Brändinime Soul</strong> vs <strong>omaniku Soul</strong>.
+              Kui kuupäev puudub, annab siiski nimede analüüsi ja arvutab skoori ümberkaalutult.
+            </p>
+            <ul class="bullets" style="margin-top:8px;">
+              <li>Expression = kõik tähed</li>
+              <li>Soul = vokaalid (A, E, I, O, U, Y, Õ, Ä, Ö, Ü)</li>
+              <li>Personality = konsonandid</li>
+            </ul>
+          </div>
+
+          <div class="hr"></div>
+
+          <details>
+            <summary>Vaata tähetabelit (sh Ä/Ö/Ü/Õ/Š/Ž)</summary>
+            <pre class="mono" id="demoLetterMap" style="white-space:pre-wrap; margin:10px 0 0; color:var(--muted)"></pre>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-full" class="view" style="display:none;">
+      <div class="grid">
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Täisraport: sisend</h3>
+            <span class="badge">Mitme osanikuga + OÜ sees</span>
+          </div>
+
+          <div class="mutedBox" style="margin-bottom:12px;">
+            Sisesta omanikud/osanike nimed ja sünnikuupäevad (kui mõni puudub, raport on osaline).
+            Sisesta brändinimi ning juriidiline nimi (sh <span class="kbd">OÜ</span>). Registreerimise kuupäev on soovituslik, kuid kui puudub, jääb osa kooskõlast puudu.
+          </div>
+
+          <div class="sectionTitle">
+            <h3>Omanikud / osanikud</h3>
+            <div class="rightTools">
+              <button class="btn" id="addOwner">+ Lisa osanik</button>
+              <button class="btn ghost" id="fillFull">Täida näidisega</button>
+            </div>
+          </div>
+          <div id="owners"></div>
+
+          <div class="hr"></div>
+
+          <div class="twoCol">
+            <div>
+              <label>Brändinimi</label>
+              <input id="brandName" placeholder="nt Pirja Teraapiad" />
+            </div>
+            <div>
+              <label>Juriidiline nimi (sh OÜ)</label>
+              <input id="legalName" placeholder="nt Pirja Teraapiad OÜ" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Ettevõtte registreerimise kuupäev (valikuline)</label>
+              <input id="regDate" type="date" />
+            </div>
+            <div>
+              <label>Sinu e-mail (raporti mailto jaoks)</label>
+              <input id="emailTo" type="email" placeholder="nt sina@domeen.ee" />
+            </div>
+          </div>
+
+          <div class="ctaRow" style="margin-top:12px;">
+            <button class="btn primary" id="runFull">Genereeri raport</button>
+            <button class="btn" id="saveProject">Salvesta ajalukku</button>
+            <button class="btn warn" id="sendEmail" disabled>Saada e-mailile</button>
+          </div>
+
+          <div class="footer">
+            <strong>Maksete stub:</strong> päris tootes seoksid siin Stripe Checkoutiga (ühekordne ost täisraportile). Selles protos on “tasuline” ainult mõtteharjutus.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Nime-labor</h3>
+            <span class="badge">Kiirtest + variandid</span>
+          </div>
+
+          <div class="mutedBox" style="margin-bottom:12px;">
+            Muuda nime, vajuta <strong>Kiirtest</strong> ja saad kohe skoori + 3 punkti.
+            Soovi korral genereeri automaatvariandid (OÜ jääb samaks).
+          </div>
+
+          <div class="twoCol">
+            <div>
+              <label>Testi brändinime</label>
+              <input id="labBrand" placeholder="nt Pirja Teraapiad" />
+            </div>
+            <div>
+              <label>Testi juriidilist nime</label>
+              <input id="labLegal" placeholder="nt Pirja Teraapiad OÜ" />
+            </div>
+          </div>
+
+          <div class="ctaRow" style="margin-top:12px;">
+            <button class="btn primary" id="runLab">Kiirtest</button>
+            <button class="btn" id="genNames">Paku nimevariante</button>
+          </div>
+
+          <div id="labOut" style="display:none; margin-top:12px;">
+            <div class="score">
+              <div class="scoreBig">
+                <div class="n" id="labScore">—</div>
+                <div class="pct">/ 100</div>
+              </div>
+              <div class="rightTools">
+                <span class="badge" id="labCoverage">Katvus: —</span>
+                <span class="badge" id="labFlag" style="display:none;">PUNALIPP</span>
+              </div>
+            </div>
+            <div class="bar"><div id="labBar"></div></div>
+            <ul class="bullets" id="labBullets"></ul>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="sectionTitle">
+            <h3>Parimad variandid</h3>
+            <span class="badge">Top 10</span>
+          </div>
+          <table class="table" id="nameTable">
+            <thead>
+              <tr>
+                <th>Nimi</th>
+                <th>Skoor</th>
+                <th>Kiirkokkuvõte</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="4" style="color:var(--muted)">Genereeri variandid, et siin midagi näha.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px;">
+        <div class="sectionTitle">
+          <h3>Raport</h3>
+          <div class="rightTools">
+            <span class="badge" id="fullCoverage">Katvus: —</span>
+            <span class="badge" id="fullFlag" style="display:none;">PUNALIPP</span>
+            <button class="btn" id="copyReport" disabled>Kopeeri raport</button>
+          </div>
+        </div>
+        <div id="report" class="mutedBox" style="min-height: 220px; white-space: pre-wrap;"></div>
+      </div>
+    </section>
+
+    <section id="view-history" class="view" style="display:none;">
+      <div class="card">
+        <div class="sectionTitle">
+          <h3>Ajalugu</h3>
+          <div class="rightTools">
+            <button class="btn" id="clearHistory">Tühjenda ajalugu</button>
+          </div>
+        </div>
+        <div class="mutedBox" style="margin-bottom:12px;">
+          Ajalugu salvestub sinu brauserisse (localStorage). Päris tootes läheks see kasutajakontoga serverisse.
+        </div>
+        <table class="table" id="historyTable">
+          <thead>
+            <tr>
+              <th>Kuupäev</th>
+              <th>Brändinimi</th>
+              <th>Juriidiline nimi</th>
+              <th>Omanikke</th>
+              <th>Skoor</th>
+              <th>Katvus</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="7" style="color:var(--muted)">Veel pole salvestusi.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="view-admin" class="view" style="display:none;">
+      <div class="grid">
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Admin-config (JSON)</h3>
+            <span class="badge">Muuda ja rakenda</span>
+          </div>
+          <div class="mutedBox" style="margin-bottom:12px;">
+            Siin saad muuta tähetabelit, vokaale, harmoonia-maatriksit, kaalusid ja tekstibaasi.
+            Vajuta <strong>Rakenda</strong> ja arvutused kasutavad uut konfiguratsiooni.
+          </div>
+          <label>CONFIG</label>
+          <textarea id="configJson"></textarea>
+          <div class="ctaRow" style="margin-top:12px;">
+            <button class="btn primary" id="applyConfig">Rakenda</button>
+            <button class="btn" id="resetConfig">Taasta vaikimisi</button>
+          </div>
+          <div class="footer">
+            Kui JSON on vigane, näed veateadet. Päris tootes oleks see adminile eraldi rolli taga.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>Konfiguratsiooni kontroll</h3>
+            <span class="badge">Sinu seaded</span>
+          </div>
+          <div class="mutedBox" id="configSummary"></div>
+          <div class="hr"></div>
+          <details>
+            <summary>Vokaalid</summary>
+            <pre class="mono" id="sumVowels" style="white-space:pre-wrap; margin:10px 0 0; color:var(--muted)"></pre>
+          </details>
+          <div style="height:10px"></div>
+          <details>
+            <summary>Meistrinumbrid</summary>
+            <pre class="mono" id="sumMasters" style="white-space:pre-wrap; margin:10px 0 0; color:var(--muted)"></pre>
+          </details>
+          <div style="height:10px"></div>
+          <details>
+            <summary>Kaalud</summary>
+            <pre class="mono" id="sumWeights" style="white-space:pre-wrap; margin:10px 0 0; color:var(--muted)"></pre>
+          </details>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="toast" id="toast">
+    <strong id="toastTitle">Teade</strong>
+    <div id="toastMsg" class="small"></div>
+  </div>
+
+  <script>
+    // ================================
+    // CONFIG (default)
+    // ================================
+    const DEFAULT_CONFIG = {
+      letter_map: {
+        "A":1,"B":2,"C":3,"D":4,"E":5,"F":6,"G":7,"H":8,"I":9,
+        "J":1,"K":2,"L":3,"M":4,"N":5,"O":6,"P":7,"Q":8,"R":9,
+        "S":1,"T":2,"U":3,"V":4,"W":5,"X":6,"Y":7,"Z":8,
+        "Ä":1,"Ö":6,"Ü":3,"Õ":6,"Š":1,"Ž":8
+      },
+      vowels: ["A","E","I","O","U","Y","Õ","Ä","Ö","Ü"],
+      master_numbers: [11,22],
+      ignore_chars_regex: "[^A-ZÄÖÜÕŠŽ]",
+      master_rules: {
+        "11": { base: 2, boost_if_base_at_least: 70, boost: 8, penalty_if_base_at_most: 40, penalty: -8 },
+        "22": { base: 4, boost_if_base_at_least: 70, boost: 8, penalty_if_base_at_most: 40, penalty: -8 }
+      },
+      weights: {
+        brand_expression_vs_owner_lifepath: 35,
+        legal_expression_vs_owner_lifepath: 20,
+        reg_lifepath_vs_owner_lifepath: 20,
+        brand_soul_vs_owner_soul: 10,
+        brand_personality_vs_owner_personality: 5,
+        company_internal_coherence: 10
+      },
+      coverage_rules: {
+        red_flag_min_coverage: 60
+      },
+      harmony_matrix: {
+        "1": {"1":78,"2":60,"3":82,"4":62,"5":80,"6":68,"7":66,"8":72,"9":58},
+        "2": {"1":60,"2":76,"3":70,"4":72,"5":62,"6":84,"7":74,"8":58,"9":68},
+        "3": {"1":82,"2":70,"3":74,"4":60,"5":86,"6":72,"7":64,"8":66,"9":76},
+        "4": {"1":62,"2":72,"3":60,"4":80,"5":44,"6":66,"7":70,"8":84,"9":56},
+        "5": {"1":80,"2":62,"3":86,"4":44,"5":72,"6":58,"7":60,"8":70,"9":74},
+        "6": {"1":68,"2":84,"3":72,"4":66,"5":58,"6":78,"7":70,"8":62,"9":72},
+        "7": {"1":66,"2":74,"3":64,"4":70,"5":60,"6":70,"7":76,"8":58,"9":82},
+        "8": {"1":72,"2":58,"3":66,"4":84,"5":70,"6":62,"7":58,"8":78,"9":60},
+        "9": {"1":58,"2":68,"3":76,"4":56,"5":74,"6":72,"7":82,"8":60,"9":74}
+      },
+      number_meanings: {
+        "1": { headline:"Algataja ja suunanäitaja", strengths:["otsustavus","iseseisvus","kiire start","selge fookus"], risks:["üksildane juhtimine","liigne kärsitus","koostöö alahindamine"], business_energy:"Hea energia uute toodete/teenuste käivitamiseks, brändi selgeks positsioneerimiseks ja juhtrolli võtmiseks.", practical_tips:["sea 1–3 mõõdetavat eesmärki korraga","lisa süsteem, mis hoiab tempo kontrolli all","delegeeri operatiivne, et hoida fookust"] },
+        "2": { headline:"Koostöö ja suhete meister", strengths:["diplomaatia","partnerlussuhted","tundlik turu- ja kliendisignaalidele"], risks:["otsustusviivitus","liigne kompromiss","piiride hajumine"], business_energy:"Toetab partnerlust, kliendisuhete hoidmist ja teeninduskvaliteeti. Sobib hästi koostööle ja pika mängu strateegiale.", practical_tips:["tee otsuse jaoks selge tähtaeg","lepi kokku rollid ja vastutus","hoia hinnastuses kindel raam"] },
+        "3": { headline:"Looja ja nähtavuse kasvataja", strengths:["kommunikatsioon","turunduslik kergus","ideede vool","loovus"], risks:["killustatus","liiga palju projekte korraga","distsipliini puudus"], business_energy:"Hea brändi hääle, sisu, kogukonna ja nähtavuse kasvatamiseks. Tõmbab tähelepanu ja aitab lihtsustada sõnumit.", practical_tips:["vali üks põhisõnum ja üks põhipakkumine","pane ideed kalendrisse, mitte pähe","mõõda turunduses järjepidevust"] },
+        "4": { headline:"Süsteemide ja stabiilsuse ehitaja", strengths:["struktuur","järjepidevus","protsessid","usaldusväärsus"], risks:["liigne jäikus","innovatsiooni pidur","üleplaneerimine"], business_energy:"Toetab süsteeme, kvaliteeti, protsesse ja kestlikku kasvu. Sobib hästi teenuse standardiseerimiseks ja skaleerimiseks.", practical_tips:["ehita SOP-id ja mõõdikud","luba 10% ulatuses eksperimente","automatiseeri korduv töö"] },
+        "5": { headline:"Muutuse ja kasvu katalüsaator", strengths:["paindlikkus","müük","läbirääkimised","turul kiire liikumine"], risks:["rahutus","liigne risk","fookuse kadumine"], business_energy:"Hea energia müügiks, laienemiseks, uute kanalite testimiseks ja kiireks kohanemiseks.", practical_tips:["hoia üks stabiilne sissetulekuallikas kõrval","tee riskidele piirid ette","pane kasvule raam: mida testid, mis ajaks, mis mõõdikuga"] },
+        "6": { headline:"Teenuse, kvaliteedi ja usalduse hoidja", strengths:["vastutustunne","kliendikogemus","maine","inimkesksus"], risks:["üleandmine","liigne perfektsionism","piiride kadumine klientidega"], business_energy:"Toetab maine loomist, lojaalseid kliente ja kvaliteedile orienteeritud teenust.", practical_tips:["pane teenuse piirid kirja","hinnasta ka hoolivust","ehita soovitussüsteem"] },
+        "7": { headline:"Analüütik ja eksperdi positsioon", strengths:["sügavus","metoodika","uuring","kompetentsi tõestus"], risks:["liigne skeptilisus","turundusest eemaldumine","ülemõtlemine"], business_energy:"Hea energia ekspertteenustele, audititele, metoodikale, koolitustele ja kõrgele kvaliteedistandardile.", practical_tips:["too sügavus turundusse lihtsa raamiga","näita tõendusmaterjali","ära oota perfektset, et avaldada"] },
+        "8": { headline:"Juhtimine, tulemus ja materiaalne mõju", strengths:["strateegia","raha ja ressursid","juhtimine","läbilöök"], risks:["kontrollivajadus","liigne surve","tulemuse nimel suhte unustamine"], business_energy:"Toetab skaleerimist, hinnastamist, tulemusjuhtimist ja rahalise stabiilsuse kasvatamist.", practical_tips:["ehita rahavoogude ülevaade","delegeeri kontrollitult","seosta tulemus väärtustega"] },
+        "9": { headline:"Missioon, mõju ja laiem vaade", strengths:["inimlik mõju","brändi tähendus","suure pildi nägemine","teenimine"], risks:["liigne idealism","piiride hägustumine","rahateema alahindamine"], business_energy:"Sobib missioonipõhisele brändile, kogukonnale ja õpetamisele.", practical_tips:["tõlgi missioon pakkumiseks","pane rahale selged reeglid","hoia fookust: kellele ja mis probleemile"] },
+        "11": { headline:"11/2 Inspiratsioon ja tundlik suunajuht", strengths:["intuitsioon","inspireeriv kommunikatsioon","mustrite taipamine"], risks:["närvipinge","kõikumine enesekindluses","tundlikkus tagasisidele"], business_energy:"Sobib brändile, mis õpetab või tõstab teadlikkust. Vajab maandust rutiinis ja selges pakkumises.", practical_tips:["eralda loov ja praktiline töö blokkidesse","hoia pakkumine lihtne ja korratav","tee koostööpartner, kes hoiab struktuuri"] },
+        "22": { headline:"22/4 Suur ehitaja ja kestlik süsteem", strengths:["suured projektid","struktuur + visioon","praktiline elluviimine"], risks:["läbipõlemise oht","liiga suur koorem","kõik-või-mitte-midagi"], business_energy:"Tugev energia skaleerimiseks ja suure mõjuga süsteemide ehitamiseks, kui struktuur ja ressursid on paigas.", practical_tips:["jaga visioon etapiks ja mõõdikuks","ehita meeskond varakult","juhi koormust teadlikult"] }
+      }
+    };
+
+    let CONFIG = loadConfig();
+
+    // ================================
+    // Utilities
+    // ================================
+    const $ = (id) => document.getElementById(id);
+
+    function toast(title, msg){
+      const t = $("toast");
+      $("toastTitle").textContent = title;
+      $("toastMsg").textContent = msg;
+      t.style.display = "block";
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(()=>{ t.style.display = "none"; }, 3200);
+    }
+
+    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+    function normalizeName(raw){
+      if(!raw) return "";
+      const upper = raw.toUpperCase();
+      const re = new RegExp(CONFIG.ignore_chars_regex, "g");
+      return upper.replace(re, "");
+    }
+
+    function sumDigits(n){
+      const s = String(Math.abs(n)).split("").map(d=>parseInt(d,10)).filter(Number.isFinite);
+      return s.reduce((a,b)=>a+b,0);
+    }
+
+    function reduceNumber(n){
+      if(!Number.isFinite(n)) return null;
+      let x = Math.abs(Math.trunc(n));
+      while(x > 9){
+        if(CONFIG.master_numbers.includes(x)) return x;
+        x = sumDigits(x);
+      }
+      return x;
+    }
+
+    function letterValue(ch){
+      return CONFIG.letter_map[ch] ?? null;
+    }
+
+    function splitVowelsConsonants(nameNorm){
+      const vowels = new Set(CONFIG.vowels);
+      let v="", c="";
+      for(const ch of nameNorm){
+        if(!letterValue(ch)) continue;
+        if(vowels.has(ch)) v += ch; else c += ch;
+      }
+      return { vowels: v, consonants: c };
+    }
+
+    function nameSum(nameNorm){
+      let s = 0;
+      for(const ch of nameNorm){
+        const v = letterValue(ch);
+        if(v) s += v;
+      }
+      return s;
+    }
+
+    function computeNameNumbers(rawName){
+      const norm = normalizeName(rawName);
+      const total = reduceNumber(nameSum(norm));
+      const { vowels, consonants } = splitVowelsConsonants(norm);
+      const soul = reduceNumber(nameSum(vowels));
+      const personality = reduceNumber(nameSum(consonants));
+      return {
+        raw: rawName || "",
+        norm,
+        expression: total,
+        soul,
+        personality,
+        sums: {
+          expression: nameSum(norm),
+          soul: nameSum(vowels),
+          personality: nameSum(consonants)
+        }
+      };
+    }
+
+    function computeDateNumbers(isoDate){
+      if(!isoDate) return { life_path:null, birthday:null, raw:"" };
+      const raw = isoDate;
+      const parts = isoDate.split("-");
+      if(parts.length !== 3) return { life_path:null, birthday:null, raw };
+      const [y,m,d] = parts;
+      const digits = (y+m+d).replace(/[^0-9]/g, "").split("").map(x=>parseInt(x,10));
+      const total = digits.reduce((a,b)=>a+b,0);
+      const life = reduceNumber(total);
+      const dayNum = reduceNumber(parseInt(d,10));
+      return { life_path: life, birthday: dayNum, raw };
+    }
+
+    function baseNumber(n){
+      if(n === 11) return CONFIG.master_rules["11"].base;
+      if(n === 22) return CONFIG.master_rules["22"].base;
+      return n;
+    }
+
+    function harmonyScore(a, b){
+      if(!a || !b) return null;
+      const aBase = baseNumber(a);
+      const bBase = baseNumber(b);
+      const m = CONFIG.harmony_matrix[String(aBase)]?.[String(bBase)];
+      if(!Number.isFinite(m)) return null;
+      let score = m;
+      for(const n of [a,b]){
+        if(n === 11 || n === 22){
+          const rule = CONFIG.master_rules[String(n)];
+          if(score >= rule.boost_if_base_at_least) score += rule.boost;
+          else if(score <= rule.penalty_if_base_at_most) score += rule.penalty;
+        }
+      }
+      return clamp(Math.round(score), 0, 100);
+    }
+
+    function weightedAverage(items){
+      const present = items.filter(x => Number.isFinite(x.value) && x.weight > 0);
+      const sumW = present.reduce((a,b)=>a+b.weight,0);
+      if(sumW === 0) return { value: null, coverage: 0 };
+      const v = present.reduce((a,b)=>a + (b.value * b.weight), 0) / sumW;
+      const intendedW = items.reduce((a,b)=>a+b.weight,0);
+      const coverage = intendedW ? (sumW / intendedW) * 100 : 0;
+      return { value: Math.round(v), coverage: Math.round(coverage) };
+    }
+
+    function ownerCompatibility(owner, company, reg){
+      const brandExpVsLife = harmonyScore(company.brand.expression, owner.date.life_path);
+      const legalExpVsLife = harmonyScore(company.legal.expression, owner.date.life_path);
+      const regLifeVsLife = harmonyScore(reg.life_path, owner.date.life_path);
+      const brandSoulVsSoul = harmonyScore(company.brand.soul, owner.name.soul);
+      const brandPerVsPer = harmonyScore(company.brand.personality, owner.name.personality);
+      const internal = harmonyScore(company.brand.expression, reg.life_path);
+
+      return {
+        brandExpVsLife,
+        legalExpVsLife,
+        regLifeVsLife,
+        brandSoulVsSoul,
+        brandPerVsPer,
+        internal
+      };
+    }
+
+    function computeOverallCompatibility(owners, company, reg){
+      const weights = CONFIG.weights;
+      const perOwner = owners.map(o => {
+        const comps = ownerCompatibility(o, company, reg);
+        const items = [
+          { weight: weights.brand_expression_vs_owner_lifepath, value: comps.brandExpVsLife },
+          { weight: weights.legal_expression_vs_owner_lifepath, value: comps.legalExpVsLife },
+          { weight: weights.reg_lifepath_vs_owner_lifepath, value: comps.regLifeVsLife },
+          { weight: weights.brand_soul_vs_owner_soul, value: comps.brandSoulVsSoul },
+          { weight: weights.brand_personality_vs_owner_personality, value: comps.brandPerVsPer },
+          { weight: weights.company_internal_coherence, value: comps.internal }
+        ];
+        const wa = weightedAverage(items);
+        return { owner:o, components: comps, score: wa.value, coverage: wa.coverage };
+      });
+
+      const scores = perOwner.map(p => p.score).filter(Number.isFinite);
+      const coverages = perOwner.map(p => p.coverage).filter(Number.isFinite);
+      const overallScore = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+      const overallCoverage = coverages.length ? Math.round(coverages.reduce((a,b)=>a+b,0)/coverages.length) : 0;
+
+      return { overallScore, overallCoverage, perOwner };
+    }
+
+    function meaningText(n){
+      if(!n) return null;
+      const key = String(n);
+      const m = CONFIG.number_meanings[key] || CONFIG.number_meanings[String(baseNumber(n))];
+      return m || null;
+    }
+
+    function scoreBadge(score){
+      if(!Number.isFinite(score)) return { cls:"", label:"—" };
+      if(score >= 80) return { cls:"good", label:"Väga hea" };
+      if(score >= 60) return { cls:"", label:"Hea" };
+      if(score >= 40) return { cls:"warn", label:"Piiripealne" };
+      return { cls:"danger", label:"Pingeline" };
+    }
+
+    function redFlag(score, coverage){
+      return Number.isFinite(score) && score < 20 && coverage >= CONFIG.coverage_rules.red_flag_min_coverage;
+    }
+
+    function build3Bullets(ctx){
+      const bullets = [];
+      const badge = scoreBadge(ctx.score);
+      bullets.push(`Üldmulje: ${badge.label} sobivus. Fookus on kooskõlal omanike elutee ja ettevõtte nimeenergia vahel.`);
+
+      const moneyA = ctx.legal.expression;
+      const moneyB = ctx.reg.life_path;
+      if(moneyA && moneyB){
+        const s = harmonyScore(moneyA, moneyB);
+        bullets.push(`Rahaenergia: juriidilise nime (${fmtNum(moneyA)}) ja registreerimise kuupäeva (${fmtNum(moneyB)}) koosmõju on ${scoreBadge(s).label.toLowerCase()}.`);
+      } else {
+        bullets.push(`Rahaenergia: vajab täpsemaks hinnanguks juriidilist nime ja/või registreerimise kuupäeva.`);
+      }
+
+      if(ctx.missing.length){
+        bullets.push(`Järgmine samm: lisa puuduolevad andmed (${ctx.missing.join(", ")}), et kooskõla-skoor muutuks täpsemaks.`);
+      } else if(ctx.score < 60){
+        bullets.push(`Järgmine samm: katseta nime-laboris 3–5 varianti (väike tähemuutus võib muuta energia suunda).`);
+      } else {
+        bullets.push(`Järgmine samm: kinnista valitud nime positsioon (sõnum + teenuse raam), et energia väljenduks turul stabiilselt.`);
+      }
+
+      return bullets;
+    }
+
+    function fmtNum(n){
+      if(!n) return "—";
+      if(n === 11) return "11/2";
+      if(n === 22) return "22/4";
+      return String(n);
+    }
+
+    // ================================
+    // Report builder
+    // ================================
+    function fmtScore(s){
+      if(!Number.isFinite(s)) return "—";
+      return `${s}/100 (${scoreBadge(s).label})`;
+    }
+
+    function businessDynamic(owner){
+      const lp = owner.date.life_path;
+      const ex = owner.name.expression;
+      const m = meaningText(lp);
+      const m2 = meaningText(ex);
+      const pieces = [];
+      if(lp) pieces.push(`elutee ${fmtNum(lp)} (${m ? m.headline : ""})`);
+      if(ex) pieces.push(`nime väljendus ${fmtNum(ex)} (${m2 ? m2.headline : ""})`);
+      return pieces.length ? `Põhirõhk: ${pieces.join("; ")}` : "Andmed puuduvad";
+    }
+
+    function ownerOwnerDynamic(owners){
+      const lps = owners.map(o=>o.date.life_path).filter(Boolean);
+      if(lps.length < 2) return "Osanike dünaamika vajab sünnikuupäevi.";
+      let sum = 0, cnt = 0;
+      for(let i=0;i<owners.length;i++){
+        for(let j=i+1;j<owners.length;j++){
+          const a = owners[i].date.life_path;
+          const b = owners[j].date.life_path;
+          const s = harmonyScore(a,b);
+          if(Number.isFinite(s)) { sum += s; cnt++; }
+        }
+      }
+      if(!cnt) return "Osanike dünaamika vajab elutee numbreid.";
+      const avg = Math.round(sum/cnt);
+      const badge = scoreBadge(avg);
+      return `Osanike eluteede omavaheline kooskõla (keskmine): ${avg}/100 (${badge.label}).\nPraktiliselt: leppige kokku otsustamise rütm (tempo), vastutus ja konfliktide lahendamise raam.`;
+    }
+
+    function themeLine(n){
+      const m = meaningText(n);
+      if(!m) return "—";
+      return `${m.headline}. Tugevus: ${m.strengths[0]}. Risk: ${m.risks[0]}.`;
+    }
+
+    function moneyLine(legalE, regLP){
+      if(!legalE && !regLP) return "— (puudub juriidiline nimi ja reg kuupäev)";
+      if(!legalE) return `— (puudub juriidiline nimi; reg elutee ${fmtNum(regLP)} annab osalise pildi)`;
+      if(!regLP) return `— (puudub reg kuupäev; juriidiline energia ${themeLine(legalE)})`;
+      const s = harmonyScore(legalE, regLP);
+      return `${Number.isFinite(s) ? `${s}/100 (${scoreBadge(s).label})` : "—"}. Praktiline soovitus: hoia hinnastus + protsess ühes rütmis.`;
+    }
+
+    function growthLine(brandE, regLP){
+      if(!brandE || !regLP) return "— (vajab brändinime ja reg kuupäeva)";
+      const s = harmonyScore(brandE, regLP);
+      return `${s}/100 (${scoreBadge(s).label}). Kõrgem skoor toetab skaleerimist ühtses raamistikus.`;
+    }
+
+    function buildBusinessThemes(owners, company, reg){
+      const out = [];
+      const brandE = company.brand.expression;
+      const legalE = company.legal.expression;
+      const regLP = reg.life_path;
+
+      out.push(`Brändi energia (brändi väljendus ${fmtNum(brandE)}): ${themeLine(brandE)}`);
+      out.push(`Rahaenergia (juriidiline väljendus ${fmtNum(legalE)} + reg elutee ${fmtNum(regLP)}): ${moneyLine(legalE, regLP)}`);
+      out.push(`Kliendisuhe (brändi isiksus ${fmtNum(company.brand.personality)}): ${themeLine(company.brand.personality)}`);
+      out.push(`Kasv (brändi väljendus ${fmtNum(brandE)} + reg elutee ${fmtNum(regLP)} kooskõla): ${growthLine(brandE, regLP)}`);
+
+      const ownerLPs = owners.map(o=>o.date.life_path).filter(Boolean);
+      const ownerLPAvg = ownerLPs.length ? Math.round(ownerLPs.reduce((a,b)=>a+b,0)/ownerLPs.length) : null;
+      const leadScore = harmonyScore(brandE, ownerLPAvg);
+      out.push(`Juhtimine (brändi väljendus ${fmtNum(brandE)} vs omanike keskmine elutee ${fmtNum(ownerLPAvg)}): ${Number.isFinite(leadScore) ? `${leadScore}/100 (${scoreBadge(leadScore).label})` : "—"}`);
+
+      out.push(`Maine (juriidilise nime isiksus ${fmtNum(company.legal.personality)}): ${themeLine(company.legal.personality)}`);
+      return out.map(x=>"- "+x).join("\n");
+    }
+
+    function buildRecommendations(score, owners, company, reg){
+      const out = [];
+      if(!Number.isFinite(score)) return "Andmed ei luba veel soovitusi anda.";
+
+      if(score >= 80){
+        out.push("- Hoia nimi stabiilsena ja ehita selle ümber selge positsioneerimine (sõnum, pakkumine, väärtused).\n- Vii energia praktikasse: protsessid, hinnastus, müügikanalid ja kliendikogemuse standard.");
+        return out.join("\n");
+      }
+
+      if(score >= 60){
+        out.push("- Sobivus on hea, kuid täpsusta rollijaotus: kes juhib, kes hoiab kliendisuhteid, kes hoiab süsteemi.\n- Katseta nime-laboris 2–3 mikromuudatust (1 täht või üks sõna), et vaadata, kas saab tõsta sisemist kooskõla.");
+      } else if(score >= 40){
+        out.push("- Sobivus on piiripealne: teatud kombinatsioonid võivad tekitada hõõrdumist (tempo, otsustamine, struktuur vs vabadus).\n- Soovitus: muuda brändinimes 1–2 tähte või lisa üks stabiliseeriv sõna (nt ‘Stuudio’, ‘Partnerid’, ‘Grupp’) ja võrdle kiirtestiga.\n- Pane kokku otsustusprotokoll: kuidas vaieldakse ja kuidas otsustatakse.");
+      } else {
+        out.push("- Sobivus on pingeline: risk on energiate konfliktis (tõukejõud vs pidur, kontroll vs missioon, struktuur vs muutus).\n- Soovitus: alusta nime muutmist väikese sammuga (1 täht lisaks/eemaldus), siis suurem samm (sõna lisamine).\n- Ärisuunad: vali tegevused, mis toetavad omanike elutee tugevusi (näed seda omanike profiili all).");
+      }
+
+      const missingDob = owners.some(o=>!o.date.raw);
+      const missingReg = !reg.raw;
+      if(missingDob || missingReg){
+        out.push("- Analüüs on osaline. Lisa puuduvad kuupäevad, et kooskõla (eriti reg kuupäeva osa) saaks lõpuni hinnatud.");
+      }
+
+      return out.join("\n");
+    }
+
+    function buildFullReport(owners, company, reg, overall){
+      const missing = [];
+      owners.forEach((o, idx)=>{
+        if(!o.name.raw) missing.push(`osanik #${idx+1} nimi`);
+        if(!o.date.raw) missing.push(`osanik #${idx+1} sünnikuupäev`);
+      });
+      if(!company.brand.raw) missing.push("brändinimi");
+      if(!company.legal.raw) missing.push("juriidiline nimi");
+      if(!reg.raw) missing.push("registreerimise kuupäev");
+
+      const lines = [];
+      const score = overall.overallScore;
+      const coverage = overall.overallCoverage;
+      const rf = redFlag(score, coverage);
+      const badge = scoreBadge(score);
+
+      lines.push(`ÄRI NUMEROLOOGILINE SOBIVUS (täisraport)`);
+      lines.push(`Skoor: ${Number.isFinite(score) ? score : "—"}/100  |  Katvus: ${coverage}%  |  Hinnang: ${badge.label}${rf ? "  |  PUNALIPP" : ""}`);
+      if(missing.length){
+        lines.push(`\nMÄRKUS: Analüüs on osaline, sest puudub: ${missing.join(", ")}.`);
+      }
+
+      lines.push(`\n1) KOKKUVÕTE`);
+      const bullets = build3Bullets({ score, brand: company.brand, legal: company.legal, reg, missing });
+      bullets.forEach(b => lines.push(`- ${b}`));
+
+      lines.push(`\n2) OMANKIKE PROFIIL (nimed + kuupäevad)`);
+      owners.forEach((o, i)=>{
+        lines.push(`\nOsanik #${i+1}: ${o.name.raw || "(nimi puudu)"}`);
+        lines.push(`- Elutee: ${fmtNum(o.date.life_path)}  |  Sünnipäev: ${fmtNum(o.date.birthday)}`);
+        lines.push(`- Väljendus: ${fmtNum(o.name.expression)}  |  Hing: ${fmtNum(o.name.soul)}  |  Isiksus: ${fmtNum(o.name.personality)}`);
+
+        const mLife = meaningText(o.date.life_path);
+        if(mLife){
+          lines.push(`- Elutee fookus: ${mLife.headline}. ${mLife.business_energy}`);
+        }
+        const mExp = meaningText(o.name.expression);
+        if(mExp){
+          lines.push(`- Nime energia (väljendus): ${mExp.headline}.`);
+          lines.push(`  Tugevused: ${mExp.strengths.slice(0,3).join(", ")}.`);
+          lines.push(`  Riskid: ${mExp.risks.slice(0,2).join(", ")}.`);
+        }
+
+        lines.push(`- Äridünaamika: ${businessDynamic(o)}.`);
+      });
+
+      if(owners.length > 1){
+        lines.push(`\n3) OSANIKE OMAVAHELINE DÜNAAMIKA`);
+        lines.push(ownerOwnerDynamic(owners));
+      }
+
+      lines.push(`\n4) ETTEVÕTTE NIMED JA ENERGIA`);
+      lines.push(`- Brändinimi: ${company.brand.raw || "(puudub)"}`);
+      lines.push(`  Väljendus: ${fmtNum(company.brand.expression)} | Hing: ${fmtNum(company.brand.soul)} | Isiksus: ${fmtNum(company.brand.personality)}`);
+      lines.push(`- Juriidiline nimi: ${company.legal.raw || "(puudub)"}`);
+      lines.push(`  Väljendus: ${fmtNum(company.legal.expression)} | Hing: ${fmtNum(company.legal.soul)} | Isiksus: ${fmtNum(company.legal.personality)}`);
+      if(reg.raw){
+        lines.push(`- Registreerimise kuupäev: ${reg.raw}`);
+        lines.push(`  Ettevõtte elutee: ${fmtNum(reg.life_path)} | Päevanumber: ${fmtNum(reg.birthday)}`);
+      } else {
+        lines.push(`- Registreerimise kuupäev: (puudub)`);
+      }
+
+      lines.push(`\n5) KOOSKÕLA ANALÜÜS (omanikud vs ettevõte)`);
+      overall.perOwner.forEach((p, idx)=>{
+        lines.push(`\nOsanik #${idx+1}: ${p.owner.name.raw || "(nimi puudu)"}`);
+        lines.push(`- Sobivus: ${Number.isFinite(p.score) ? p.score : "—"}/100 | Katvus: ${p.coverage}%`);
+        const c = p.components;
+        lines.push(`  Brändi Expression (${fmtNum(company.brand.expression)}) vs Elutee (${fmtNum(p.owner.date.life_path)}): ${fmtScore(c.brandExpVsLife)}`);
+        lines.push(`  Juriidilise Expression (${fmtNum(company.legal.expression)}) vs Elutee (${fmtNum(p.owner.date.life_path)}): ${fmtScore(c.legalExpVsLife)}`);
+        lines.push(`  Reg elutee (${fmtNum(reg.life_path)}) vs Elutee (${fmtNum(p.owner.date.life_path)}): ${fmtScore(c.regLifeVsLife)}`);
+        lines.push(`  Brändi Hing (${fmtNum(company.brand.soul)}) vs Hinge (${fmtNum(p.owner.name.soul)}): ${fmtScore(c.brandSoulVsSoul)}`);
+        lines.push(`  Brändi Isiksus (${fmtNum(company.brand.personality)}) vs Isiksus (${fmtNum(p.owner.name.personality)}): ${fmtScore(c.brandPerVsPer)}`);
+      });
+
+      lines.push(`\n6) ÄRITEEMAD (bränd, raha, kliendid, kasv, juhtimine, maine)`);
+      lines.push(buildBusinessThemes(owners, company, reg));
+
+      lines.push(`\n7) SOOVITUSED (kui sobivus on piiripealne või pingeline)`);
+      lines.push(buildRecommendations(score, owners, company, reg));
+
+      lines.push(`\n8) LÄBIPAISTVUS (mida arvutati)`);
+      lines.push(`- Vokaalid: ${CONFIG.vowels.join(", ")}`);
+      lines.push(`- Meistrinumbrid: ${CONFIG.master_numbers.join(", ")}`);
+      lines.push(`- OÜ arvestatakse juriidilises nimes tähemõjuna (ei vahetata AS-iks).`);
+
+      return lines.join("\n");
+    }
+
+    // ================================
+    // Name lab generator
+    // ================================
+    const BRAND_WORDS = ["STUUDIO","KONSULTATSIOON","PARTNERID","GRUPP","AKADEEMIA","KESKUS","BÜROO","LAB","KLUBI","MAJA"];
+    const ALLOWED_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜÕŠŽ";
+
+    function splitLegalSuffix(legalRaw){
+      const t = (legalRaw || "").trim();
+      const upper = t.toUpperCase();
+      if(upper.endsWith(" OÜ") || upper.endsWith("OÜ")){
+        const base = t.replace(/\s*OÜ\s*$/i, "").trim();
+        return { base, suffix: "OÜ" };
+      }
+      return { base: t, suffix: "" };
+    }
+
+    function mutateBrand(base){
+      const b = (base || "").trim();
+      const upper = b.toUpperCase();
+      const candidates = new Set();
+      if(!upper) return candidates;
+
+      for(let i=0;i<8;i++){
+        const ch = ALLOWED_LETTERS[Math.floor(Math.random()*ALLOWED_LETTERS.length)];
+        candidates.add(upper + ch);
+      }
+      if(upper.length > 3){
+        for(let i=0;i<5;i++){
+          const idx = Math.floor(Math.random()*upper.length);
+          candidates.add(upper.slice(0,idx) + upper.slice(idx+1));
+        }
+      }
+      for(let i=0;i<8;i++){
+        const idx = Math.floor(Math.random()*upper.length);
+        const ch = ALLOWED_LETTERS[Math.floor(Math.random()*ALLOWED_LETTERS.length)];
+        candidates.add(upper.slice(0,idx) + ch + upper.slice(idx+1));
+      }
+      for(let i=0;i<6;i++){
+        const w = BRAND_WORDS[Math.floor(Math.random()*BRAND_WORDS.length)];
+        candidates.add(`${upper} ${w}`);
+      }
+
+      return candidates;
+    }
+
+    // Rule B implemented: need at least one owner DOB to generate
+    function generateNameVariants(owners, currentBrand, currentLegal, regDate){
+      const hasAnyDob = owners.some(o => Boolean(o?.date?.raw));
+      if(!hasAnyDob){
+        return { error: "Variantide genereerimiseks peab vähemalt ühel osanikul olema sünnikuupäev (reegel B).", variants: [] };
+      }
+
+      const reg = computeDateNumbers(regDate);
+      const legalParts = splitLegalSuffix(currentLegal || "");
+
+      const candidates = new Set();
+      const brandCands = mutateBrand(currentBrand);
+      brandCands.forEach(x => candidates.add(JSON.stringify({ brand: x, legal: legalParts.suffix ? `${x} ${legalParts.suffix}` : currentLegal })));
+
+      const legalBaseCands = mutateBrand(legalParts.base);
+      legalBaseCands.forEach(x => {
+        const legal = legalParts.suffix ? `${x} ${legalParts.suffix}` : x;
+        candidates.add(JSON.stringify({ brand: currentBrand, legal }));
+      });
+
+      const scored = [];
+      for(const item of candidates){
+        const obj = JSON.parse(item);
+        const company = {
+          brand: computeNameNumbers(obj.brand),
+          legal: computeNameNumbers(obj.legal)
+        };
+        const overall = computeOverallCompatibility(owners, company, reg);
+        if(Number.isFinite(overall.overallScore)){
+          scored.push({ ...obj, score: overall.overallScore, coverage: overall.overallCoverage });
+        }
+      }
+
+      scored.sort((a,b)=> b.score - a.score);
+      return { error: null, variants: scored.slice(0, 10) };
+    }
+
+    // ================================
+    // Views + UI wiring
+    // ================================
+    const views = ["home","demo","full","history","admin"];
+
+    function setView(v){
+      for(const k of views){
+        const el = $("view-"+k);
+        if(el) el.style.display = (k===v ? "block" : "none");
+      }
+      document.querySelectorAll(".pill").forEach(btn=>{
+        btn.classList.toggle("active", btn.dataset.view === v);
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    document.querySelectorAll(".pill").forEach(btn=>{
+      btn.addEventListener("click", ()=> setView(btn.dataset.view));
+    });
+
+    $("goDemo").addEventListener("click", ()=> setView("demo"));
+    $("goFull").addEventListener("click", ()=> setView("full"));
+
+    // Demo
+    $("demoLetterMap").textContent = JSON.stringify(DEFAULT_CONFIG.letter_map, null, 2);
+    $("fillDemo").addEventListener("click", ()=>{
+      $("demoBrand").value = "Pirja Teraapiad";
+      $("demoOwnerName").value = "Pirja";
+      $("demoOwnerDob").value = "1983-05-14";
+      toast("Näidis täidetud", "Vajuta 'Arvuta demo'.");
+    });
+
+    $("runDemo").addEventListener("click", ()=>{
+      const brand = $("demoBrand").value;
+      const ownerName = $("demoOwnerName").value;
+      const dob = $("demoOwnerDob").value;
+
+      const owner = {
+        name: computeNameNumbers(ownerName),
+        date: computeDateNumbers(dob)
+      };
+      const company = {
+        brand: computeNameNumbers(brand),
+        legal: computeNameNumbers(brand + " OÜ")
+      };
+      const reg = computeDateNumbers("");
+
+      const items = [
+        { weight: 70, value: harmonyScore(company.brand.expression, owner.date.life_path) },
+        { weight: 30, value: harmonyScore(company.brand.soul, owner.name.soul) }
+      ];
+      const wa = weightedAverage(items);
+      const score = wa.value;
+      const coverage = wa.coverage;
+
+      const missing = [];
+      if(!ownerName) missing.push("omaniku nimi");
+      if(!dob) missing.push("omaniku sünnikuupäev");
+      if(!brand) missing.push("brändinimi");
+
+      const bullets = build3Bullets({ score, brand: company.brand, legal: company.legal, reg, missing });
+
+      $("demoOut").style.display = "block";
+      $("demoScore").textContent = Number.isFinite(score) ? score : "—";
+      $("demoBar").style.width = Number.isFinite(score) ? (score + "%") : "0%";
+      $("demoCoverage").textContent = `Katvus: ${coverage}%`;
+
+      const rf = redFlag(score, coverage);
+      $("demoFlag").style.display = rf ? "inline-flex" : "none";
+      $("demoFlag").className = rf ? "badge danger" : "badge";
+      $("demoFlag").textContent = "PUNALIPP";
+
+      const ul = $("demoBullets");
+      ul.innerHTML = "";
+      bullets.forEach(b=>{
+        const li = document.createElement("li");
+        li.textContent = b;
+        ul.appendChild(li);
+      });
+
+      const exp = company.brand.expression;
+      const lp = owner.date.life_path;
+      const expMeaning = meaningText(exp);
+      const lpMeaning = meaningText(lp);
+      const explainParts = [];
+      explainParts.push(`<strong>Brändi väljendus</strong>: ${fmtNum(exp)}${expMeaning ? ` (${expMeaning.headline})` : ""}`);
+      explainParts.push(`<strong>Omaniku elutee</strong>: ${fmtNum(lp)}${lpMeaning ? ` (${lpMeaning.headline})` : ""}`);
+      explainParts.push(`<strong>Kooskõla</strong>: ${Number.isFinite(items[0].value) ? items[0].value + "/100" : "—"}`);
+      if(missing.length){ explainParts.push(`<br><br><em>Osaline analüüs, sest puudub: ${missing.join(", ")}.</em>`); }
+      $("demoExplain").innerHTML = explainParts.join("<br>");
+    });
+
+    // Full: owners UI
+    let ownerCount = 0;
+    function escapeHtml(s){
+      return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");
+    }
+
+    function addOwnerRow(name="", dob=""){
+      ownerCount++;
+      const id = ownerCount;
+      const div = document.createElement("div");
+      div.className = "ownerRow";
+      div.dataset.ownerId = String(id);
+      div.innerHTML = `
+        <div class="sectionTitle">
+          <h3>Osanik #${id}</h3>
+          <div class="rightTools">
+            <button class="btn danger" data-remove="${id}">Eemalda</button>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>Nimi</label>
+            <input data-field="name" value="${escapeHtml(name)}" placeholder="nt Mari Maasikas" />
+          </div>
+          <div>
+            <label>Sünnikuupäev (valikuline)</label>
+            <input data-field="dob" type="date" value="${escapeHtml(dob)}" />
+          </div>
+        </div>
+      `;
+      div.querySelector("[data-remove]").addEventListener("click", ()=>{
+        if(document.querySelectorAll(".ownerRow").length <= 1){
+          toast("Ei saa eemaldada", "Vähemalt 1 osanik peab jääma.");
+          return;
+        }
+        div.remove();
+        toast("Eemaldatud", "Osanik eemaldati sisendist.");
+      });
+      $("owners").appendChild(div);
+    }
+
+    $("addOwner").addEventListener("click", ()=> addOwnerRow());
+
+    function readOwners(){
+      const rows = Array.from(document.querySelectorAll(".ownerRow"));
+      return rows.map(r=>{
+        const name = r.querySelector("[data-field='name']").value;
+        const dob = r.querySelector("[data-field='dob']").value;
+        return {
+          name: computeNameNumbers(name),
+          date: computeDateNumbers(dob)
+        };
+      });
+    }
+
+    function readCompanyFromInputs(){
+      const brandRaw = $("brandName").value;
+      const legalRaw = $("legalName").value;
+      return {
+        brand: computeNameNumbers(brandRaw),
+        legal: computeNameNumbers(legalRaw)
+      };
+    }
+
+    function updateLabInputsFromMain(){
+      $("labBrand").value = $("brandName").value;
+      $("labLegal").value = $("legalName").value;
+    }
+
+    $("brandName").addEventListener("input", updateLabInputsFromMain);
+    $("legalName").addEventListener("input", updateLabInputsFromMain);
+
+    $("fillFull").addEventListener("click", ()=>{
+      $("owners").innerHTML = "";
+      ownerCount = 0;
+      addOwnerRow("Pirja", "1983-05-14");
+      addOwnerRow("Mati", "1980-11-02");
+      $("brandName").value = "Pirja Teraapiad";
+      $("legalName").value = "Pirja Teraapiad OÜ";
+      $("regDate").value = "2020-06-01";
+      updateLabInputsFromMain();
+      toast("Näidis täidetud", "Vajuta 'Genereeri raport'.");
+    });
+
+    addOwnerRow();
+
+    let lastReportText = "";
+    $("runFull").addEventListener("click", ()=>{
+      const owners = readOwners();
+      const company = readCompanyFromInputs();
+      const reg = computeDateNumbers($("regDate").value);
+
+      if(!company.brand.raw && !company.legal.raw){
+        toast("Puudub nimi", "Sisesta vähemalt brändinimi või juriidiline nimi.");
+        return;
+      }
+
+      const overall = computeOverallCompatibility(owners, company, reg);
+      const report = buildFullReport(owners, company, reg, overall);
+      lastReportText = report;
+      $("report").textContent = report;
+
+      const coverage = overall.overallCoverage;
+      const score = overall.overallScore;
+      $("fullCoverage").textContent = `Katvus: ${coverage}%`;
+
+      const rf = redFlag(score, coverage);
+      $("fullFlag").style.display = rf ? "inline-flex" : "none";
+      $("fullFlag").className = rf ? "badge danger" : "badge";
+      $("fullFlag").textContent = "PUNALIPP";
+
+      $("copyReport").disabled = !report;
+      $("sendEmail").disabled = !report;
+
+      updateLabInputsFromMain();
+
+      toast("Raport valmis", `Skoor: ${Number.isFinite(score) ? score : "—"}/100, katvus: ${coverage}%`);
+    });
+
+    $("copyReport").addEventListener("click", async ()=>{
+      if(!lastReportText){ toast("Pole midagi kopeerida", "Genereeri raport enne."); return; }
+      try{
+        await navigator.clipboard.writeText(lastReportText);
+        toast("Kopeeritud", "Raport on lõikelaual.");
+      } catch {
+        toast("Ei õnnestunud", "Brauser ei lubanud kopeerida. Vali tekst käsitsi.");
+      }
+    });
+
+    $("sendEmail").addEventListener("click", ()=>{
+      const to = ($("emailTo").value || "").trim();
+      if(!to){ toast("Puudub e-mail", "Sisesta e-maili aadress."); return; }
+      if(!lastReportText){ toast("Puudub raport", "Genereeri raport enne."); return; }
+      const subject = encodeURIComponent("Äri numeroloogiline raport");
+      const body = encodeURIComponent(lastReportText.slice(0, 8000));
+      window.location.href = `mailto:${encodeURIComponent(to)}?subject=${subject}&body=${body}`;
+    });
+
+    // Lab
+    $("runLab").addEventListener("click", ()=>{
+      const owners = readOwners();
+      const brand = $("labBrand").value;
+      const legal = $("labLegal").value;
+      const reg = computeDateNumbers($("regDate").value);
+
+      const company = { brand: computeNameNumbers(brand), legal: computeNameNumbers(legal) };
+      const overall = computeOverallCompatibility(owners, company, reg);
+      const score = overall.overallScore;
+      const coverage = overall.overallCoverage;
+
+      const missing = [];
+      owners.forEach((o, idx)=>{ if(!o.date.raw) missing.push(`osanik #${idx+1} sünnikuupäev`); });
+      if(!reg.raw) missing.push("registreerimise kuupäev");
+
+      const bullets = build3Bullets({ score, brand: company.brand, legal: company.legal, reg, missing });
+
+      $("labOut").style.display = "block";
+      $("labScore").textContent = Number.isFinite(score) ? score : "—";
+      $("labBar").style.width = Number.isFinite(score) ? (score + "%") : "0%";
+      $("labCoverage").textContent = `Katvus: ${coverage}%`;
+
+      const rf = redFlag(score, coverage);
+      $("labFlag").style.display = rf ? "inline-flex" : "none";
+      $("labFlag").className = rf ? "badge danger" : "badge";
+      $("labFlag").textContent = "PUNALIPP";
+
+      const ul = $("labBullets");
+      ul.innerHTML = "";
+      bullets.forEach(b=>{
+        const li = document.createElement("li");
+        li.textContent = b;
+        ul.appendChild(li);
+      });
+    });
+
+    $("genNames").addEventListener("click", ()=>{
+      const owners = readOwners();
+      const currentBrand = $("labBrand").value || $("brandName").value;
+      const currentLegal = $("labLegal").value || $("legalName").value;
+      const regDate = $("regDate").value;
+
+      const tbody = $("nameTable").querySelector("tbody");
+      tbody.innerHTML = "";
+
+      if(!currentBrand && !currentLegal){
+        toast("Puudub sisend", "Sisesta brändinimi ja/või juriidiline nimi.");
+        tbody.innerHTML = `<tr><td colspan="4" style="color:var(--muted)">Sisesta vähemalt brändinimi või juriidiline nimi.</td></tr>`;
+        return;
+      }
+
+      const res = generateNameVariants(owners, currentBrand, currentLegal, regDate);
+      if(res.error){
+        toast("Ei saa genereerida", res.error);
+        tbody.innerHTML = `<tr><td colspan="4" style="color:var(--muted)">${escapeHtml(res.error)}</td></tr>`;
+        return;
+      }
+
+      const variants = res.variants;
+      if(!variants.length){
+        tbody.innerHTML = `<tr><td colspan="4" style="color:var(--muted)">Ei saanud variante skoorida. Proovi lisada osanike sünnikuupäevad ja brändinimi.</td></tr>`;
+        return;
+      }
+
+      for(const v of variants){
+        const tr = document.createElement("tr");
+        const quick = v.score >= 80 ? "Tõstab stabiilsust ja fookust" : v.score >= 60 ? "Parandab kooskõla" : "Väike parendus";
+        tr.innerHTML = `
+          <td>${escapeHtml(v.brand)}<br><span class="small">${escapeHtml(v.legal)}</span></td>
+          <td><strong>${v.score}</strong><br><span class="small">Katvus ${v.coverage}%</span></td>
+          <td class="small">${quick}</td>
+          <td><button class="btn" data-use="1">Kasuta</button></td>
+        `;
+        tr.querySelector("[data-use]").addEventListener("click", ()=>{
+          $("brandName").value = v.brand;
+          $("legalName").value = v.legal;
+          updateLabInputsFromMain();
+          toast("Rakendatud", "Nimi kanti täisraporti sisendisse.");
+        });
+        tbody.appendChild(tr);
+      }
+    });
+
+    // History
+    function loadHistory(){
+      try{ return JSON.parse(localStorage.getItem("nbf_history") || "[]"); } catch { return []; }
+    }
+    function saveHistory(items){
+      localStorage.setItem("nbf_history", JSON.stringify(items));
+    }
+
+    function renderHistory(){
+      const items = loadHistory();
+      const tbody = $("historyTable").querySelector("tbody");
+      tbody.innerHTML = "";
+      if(!items.length){
+        tbody.innerHTML = `<tr><td colspan="7" style="color:var(--muted)">Veel pole salvestusi.</td></tr>`;
+        return;
+      }
+      for(const it of items){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${escapeHtml(it.created_at)}</td>
+          <td>${escapeHtml(it.brand)}</td>
+          <td>${escapeHtml(it.legal)}</td>
+          <td>${it.owner_count}</td>
+          <td><strong>${it.score ?? "—"}</strong></td>
+          <td>${it.coverage ?? "—"}%</td>
+          <td><button class="btn" data-load="1">Laadi</button></td>
+        `;
+        tr.querySelector("[data-load]").addEventListener("click", ()=>{
+          $("owners").innerHTML = "";
+          ownerCount = 0;
+          for(const o of it.owners){
+            addOwnerRow(o.name, o.dob);
+          }
+          $("brandName").value = it.brand;
+          $("legalName").value = it.legal;
+          $("regDate").value = it.regDate || "";
+          updateLabInputsFromMain();
+          setView("full");
+          toast("Laetud", "Salvestus kanti täisraporti vaatesse.");
+        });
+        tbody.appendChild(tr);
+      }
+    }
+
+    $("saveProject").addEventListener("click", ()=>{
+      const ownersRows = Array.from(document.querySelectorAll(".ownerRow")).map(r=>({
+        name: r.querySelector("[data-field='name']").value,
+        dob: r.querySelector("[data-field='dob']").value
+      }));
+      const brand = $("brandName").value;
+      const legal = $("legalName").value;
+      const regDate = $("regDate").value;
+
+      const owners = readOwners();
+      const company = readCompanyFromInputs();
+      const reg = computeDateNumbers(regDate);
+      const overall = computeOverallCompatibility(owners, company, reg);
+
+      const items = loadHistory();
+      items.unshift({
+        created_at: new Date().toLocaleString(),
+        brand,
+        legal,
+        regDate,
+        owners: ownersRows,
+        owner_count: ownersRows.length,
+        score: overall.overallScore,
+        coverage: overall.overallCoverage
+      });
+      saveHistory(items.slice(0, 50));
+      renderHistory();
+      toast("Salvestatud", "Lisatud ajalukku.");
+    });
+
+    $("clearHistory").addEventListener("click", ()=>{
+      localStorage.removeItem("nbf_history");
+      renderHistory();
+      toast("Tühjendatud", "Ajalugu eemaldati sellest brauserist.");
+    });
+
+    // Admin config
+    function mergeConfig(base, patch){
+      const out = { ...base, ...patch };
+      out.letter_map = { ...base.letter_map, ...(patch.letter_map || {}) };
+      out.harmony_matrix = patch.harmony_matrix || base.harmony_matrix;
+      out.number_meanings = { ...base.number_meanings, ...(patch.number_meanings || {}) };
+      out.weights = { ...base.weights, ...(patch.weights || {}) };
+      out.master_rules = { ...base.master_rules, ...(patch.master_rules || {}) };
+      out.coverage_rules = { ...base.coverage_rules, ...(patch.coverage_rules || {}) };
+      out.vowels = patch.vowels || base.vowels;
+      out.master_numbers = patch.master_numbers || base.master_numbers;
+      out.ignore_chars_regex = patch.ignore_chars_regex || base.ignore_chars_regex;
+      return out;
+    }
+
+    function loadConfig(){
+      try{
+        const raw = localStorage.getItem("nbf_config");
+        if(!raw) return structuredClone(DEFAULT_CONFIG);
+        const parsed = JSON.parse(raw);
+        return mergeConfig(structuredClone(DEFAULT_CONFIG), parsed);
+      } catch {
+        return structuredClone(DEFAULT_CONFIG);
+      }
+    }
+
+    function persistConfig(){
+      localStorage.setItem("nbf_config", JSON.stringify(CONFIG));
+    }
+
+    function renderAdmin(){
+      $("configJson").value = JSON.stringify(CONFIG, null, 2);
+      $("configSummary").innerHTML = `
+        <strong>Aktiivne konfiguratsioon</strong><br>
+        Tähti: <span class="kbd">${Object.keys(CONFIG.letter_map).length}</span> | 
+        Vokaale: <span class="kbd">${CONFIG.vowels.length}</span> | 
+        Meistrid: <span class="kbd">${CONFIG.master_numbers.join(", ")}</span> | 
+        Kaalude summa: <span class="kbd">${Object.values(CONFIG.weights).reduce((a,b)=>a+b,0)}</span>
+      `;
+      $("sumVowels").textContent = JSON.stringify(CONFIG.vowels, null, 2);
+      $("sumMasters").textContent = JSON.stringify({ master_numbers: CONFIG.master_numbers, master_rules: CONFIG.master_rules }, null, 2);
+      $("sumWeights").textContent = JSON.stringify(CONFIG.weights, null, 2);
+    }
+
+    $("applyConfig").addEventListener("click", ()=>{
+      try{
+        const parsed = JSON.parse($("configJson").value);
+        CONFIG = mergeConfig(structuredClone(DEFAULT_CONFIG), parsed);
+        persistConfig();
+        renderAdmin();
+        toast("Rakendatud", "Uus konfiguratsioon on aktiivne.");
+      } catch(e){
+        toast("JSON viga", e.message || "Kontrolli süntaksit.");
+      }
+    });
+
+    $("resetConfig").addEventListener("click", ()=>{
+      CONFIG = structuredClone(DEFAULT_CONFIG);
+      persistConfig();
+      renderAdmin();
+      toast("Taastatud", "Vaikimisi konfiguratsioon on tagasi.");
+    });
+
+    // Initial render
+    renderHistory();
+    renderAdmin();
+
+    document.querySelector("[data-view='admin']").addEventListener("click", renderAdmin);
+    document.querySelector("[data-view='history']").addEventListener("click", renderHistory);
+  </script>
+</body>
+</html>
