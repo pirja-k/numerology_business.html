@@ -956,7 +956,8 @@ nt Alateadvuse avaja"></textarea>
       if(m?.practical_tips?.length) lines.push(`Praktiline: ${m.practical_tips.slice(0,3).join("; ")}.`);
       if(n === 11) lines.push(`Märkus 11 kohta: tugev inspiratsioon vajab maandust (4) ja piire (6), et tempo püsiks ja koormus ei kisuks üle.`);
       if(n === 22) lines.push(`Märkus 22 kohta: suur ehitaja vajab etapistamist (4) ja ressursijuhtimist (8), et visioon ei muutuks koormaks.`);
-      return lines.join(" ");
+      return lines.join("
+");
     }
 
     function hiddenPassion(nameNumbers){
@@ -1152,7 +1153,8 @@ Mida see tähendab`);
       const brandNorm = (company.brand.raw || "").trim();
       let altBrand = "";
       if(firstOwnerName){
-        const re = new RegExp(`^\s*${firstOwnerName.replace(/[.*+?^${}()|[\]\]/g, "\$&")}\s*[-–:]?\s*`, "i");
+        const escapedOwner = firstOwnerName.replace(/[.*+?^${}()|[\]\]/g, "\$&");
+        const re = new RegExp(`^\s*${escapedOwner}\s*[-–:]?\s*`, "i");
         altBrand = brandNorm.replace(re, "").trim();
       }
       if(altBrand && altBrand.toUpperCase() !== brandNorm.toUpperCase()){
